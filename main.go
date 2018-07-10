@@ -124,11 +124,19 @@ func printTable(header []string, data [][]string) {
 
 func printHops(hops []Hop, level int) {
 	printHeader("Hops", level)
-	header := []string{"Hop", "Alpha", "Amount", "Time", "Notes"}
+	header := []string{"Hop", "Alpha", "Amount", "Use", "Time", "Notes"}
 	data := make([][]string, 0, 10)
 
 	for _, h := range hops {
-		data = append(data, []string{h.Name, fmt.Sprintf("%.2f percent", h.Alpha), fmt.Sprintf("%.2f grams", h.Amount*1000), fmt.Sprintf("%.2fmin", h.Time), h.Notes})
+		useTime := ""
+		// You should never boil more than 90min anyway
+		if h.Time > 90 {
+			useTime = fmt.Sprintf("%.2f days", h.Time/60/24)
+		} else {
+			useTime = fmt.Sprintf("%.2fmin", h.Time)
+		}
+
+		data = append(data, []string{h.Name, fmt.Sprintf("%.2f percent", h.Alpha), fmt.Sprintf("%.2f grams", h.Amount*1000), h.Use, useTime, h.Notes})
 	}
 	printTable(header, data)
 
